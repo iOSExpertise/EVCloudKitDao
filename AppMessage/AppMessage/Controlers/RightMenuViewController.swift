@@ -7,7 +7,6 @@
 
 import UIKit
 import CloudKit
-import Async
 import EVCloudKitDao
 
 class RightMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -45,7 +44,7 @@ class RightMenuViewController: UIViewController, UITableViewDataSource, UITableV
     func loadContacts(_ retryCount:Double = 1) {        
         // Look who of our contact is also using this app.        
         EVCloudKitDao.publicDB.allContactsUserInfo({ users in
-                EVLog("AllContactUserInfo count = \(users?.count)");
+                EVLog("AllContactUserInfo count = \(users?.count ?? 0)");
                 Async.main{
                     self.contacts = users ?? []
                     self.tableView.reloadData()

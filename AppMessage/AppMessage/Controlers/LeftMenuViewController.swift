@@ -7,7 +7,6 @@
 
 import UIKit
 import CloudKit
-import Async
 import EVCloudKitDao
 
 class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -144,7 +143,6 @@ class LeftMenuViewController: UIViewController, UITableViewDataSource, UITableVi
     // ------------------------------------------------------------------------
 
     func connectToNews(_ retryCount: Double = 1) {
-
         EVCloudData.publicDB.connect(
             News(), predicate: NSPredicate(value: true), orderBy: Ascending(field: "Subject").Descending("creationDate"), filterId: "News_All", configureNotificationInfo: { notificationInfo in
                 //notificationInfo.alertBody = "News update"

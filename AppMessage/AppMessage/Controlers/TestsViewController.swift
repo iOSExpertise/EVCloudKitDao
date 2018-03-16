@@ -20,6 +20,9 @@ class TestsViewController: UIViewController {
     var createdId = "";
 
     @IBAction func runTest(_ sender: AnyObject) {
+        
+        conflictTest()
+
         getUserInfoTest() // will set the self.userId
 
         ingnoreFieldTest()
@@ -43,6 +46,28 @@ class TestsViewController: UIViewController {
         connectTest()
 
         alternateContainerTest()
+    }
+    
+    func conflictTest() {
+        let message = Message()
+        message.recordID = CKRecordID(recordName: "We use this twice")
+        message.Text = "This is the message text"
+
+        let message2 = Message()
+        message2.recordID = CKRecordID(recordName: "We use this twice")
+        message2.Text = "This is an other message text"
+
+        self.dao.saveItem(message, completionHandler: {record in
+            EVLog("saveItem Message: \(record.recordID.recordName)");
+        }, errorHandler: {error in
+            EVLog("<--- ERROR saveItem message \(error)");
+        })
+
+        self.dao.saveItem(message, completionHandler: {record in
+            EVLog("saveItem Message: \(record.recordID.recordName)");
+        }, errorHandler: {error in
+            EVLog("<--- ERROR saveItem message \(error)");
+        })
     }
 
     func getUserInfoTest() {
@@ -82,7 +107,7 @@ class TestsViewController: UIViewController {
         // the To for the test message will be the last contact in the list
         let sema = DispatchSemaphore(value: 0)
         dao.allContactsUserInfo({ users in
-            EVLog("AllContactUserInfo count = \(users?.count)");
+            EVLog("AllContactUserInfo count = \(users?.count ?? 0)");
             for user in users! {
                 EVLog("\(showNameFor(user))")
             }
@@ -241,9 +266,9 @@ class TestsViewController: UIViewController {
                 return results.count < 200 // Continue reading if we have less than 200 records and if there are more.
             }, insertedHandler: { item in
                 EVLog("inserted \(item)")
-            }, updatedHandler: { item in
+            }, updatedHandler: { item, index in
                 EVLog("updated \(item)")
-            }, deletedHandler: { recordId in
+            }, deletedHandler: { recordId, index in
                 EVLog("deleted : \(recordId)")
             }, errorHandler: { error in
                 EVLog("<--- ERROR connect")
@@ -318,7 +343,7 @@ open class testObject: CKDataObject {
     fileprivate var ignoreString: String = ""
     var saveString: String = ""
 
-    override open func propertyMapping() -> [(String?, String?)] {
+    override open func propertyMapping() -> [(keyInObject: String?, keyInResource: String?)] {
         return [("ignoreString", nil)]
     }
 }

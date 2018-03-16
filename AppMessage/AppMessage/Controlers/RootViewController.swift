@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Async
 import EVCloudKitDao
 
 class RootViewController: UIViewController {
@@ -36,10 +35,13 @@ class RootViewController: UIViewController {
     }
 
     /**
-    As what user are we loged in to iCloud. Then open the main app.
+     
+    As what ugetUserser are we loged in to iCloud. Then open the main app.
     */
     func getUser(_ retryCount:Double = 1) {
-        self.loginLabel.isHidden = true
+        Async.main {
+            self.loginLabel.isHidden = true
+        }
         
         EVCloudKitDao.publicDB.requestDiscoverabilityPermission({ (granted) -> Void in
             if !granted {
